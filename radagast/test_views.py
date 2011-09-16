@@ -10,7 +10,7 @@ def one(request, wizard):
 
 
 class TestWizard(Wizard):
-    steps = SortedDict({'start': start, 'one': one})
+    steps = SortedDict((('start', start), ('one', one)))
     wrapper = 'radagast/wrapper.html'
 
 
