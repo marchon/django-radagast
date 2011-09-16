@@ -1,10 +1,11 @@
-from django.views.generic.base import View
 from django import http
+from django.views.generic.base import View
 
 import jingo
 
 
 class Storage(object):
+
     def __init__(self, request, name):
         self.name = name
         self.session = request.session
@@ -40,7 +41,11 @@ class Wizard(View):
         super(Wizard, self).__init__(*args, **kw)
 
     def dispatch(self, request, step='', *args, **kw):
-        """Stores the progress through the wizard in the session."""
+        """
+        Main entry point. Sets up the storage, resets it if needed.
+        Finds the step, stores the progress. Then calls the appropriate
+        method.
+        """
         self.storage = Storage(request, self.name)
         if not step and self.reset_on_start:
             self.storage.reset()

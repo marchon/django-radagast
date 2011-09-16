@@ -1,9 +1,9 @@
-from django.core.urlresolvers import reverse
-from django.test import TestCase
-from django.test.client import RequestFactory
-from django.core.urlresolvers import reverse
-import test_views
 from django import http
+from django.core.urlresolvers import reverse
+from django.test.client import RequestFactory
+
+import test_views
+
 
 class TestURLs(TestCase):
     urls = 'radagast.test_urls'
