@@ -1,6 +1,7 @@
 from django import http
 from django.core.urlresolvers import reverse
 from django.test.client import RequestFactory
+from django.test import TestCase
 
 import test_views
 
@@ -38,46 +39,46 @@ class TestURLs(TestCase):
         ssn = {}
         get = self._req(self.url, ssn)
         self.w.dispatch(get)
-        assert self.w.get_progress(get) == ['start']
+        assert self.w.get_progress() == ['start']
 
         get_two = self._req(self.url_step('one'), ssn.copy())
         self.w.dispatch(get_two, 'one')
-        assert self.w.get_progress(get_two) == ['start', 'one']
+        assert self.w.get_progress() == ['start', 'one']
 
     def test_data(self):
         ssn = {}
         get = self._req(self.url, ssn)
         self.w.dispatch(get)
-        self.w.set_data(get, {'foo':'bar'})
-        assert self.w.get_data(get) == {'foo': 'bar'}
+        self.w.set_data({'foo':'bar'})
+        assert self.w.get_data() == {'foo': 'bar'}
 
         get = self._req(self.url_step('one'), ssn.copy())
         self.w.dispatch(get, 'one')
-        self.w.set_data(get, {'goo':False})
-        assert self.w.get_data(get) == {'goo': False, 'foo': 'bar'}
+        self.w.set_data({'goo':False})
+        assert self.w.get_data() == {'goo': False, 'foo': 'bar'}
 
     def test_not_reset(self):
         ssn = {}
         get = self._req(self.url, ssn)
         self.w.dispatch(get)
-        self.w.set_data(get, {'foo':'bar'})
-        assert self.w.get_data(get) == {'foo': 'bar'}
+        self.w.set_data({'foo':'bar'})
+        assert self.w.get_data() == {'foo': 'bar'}
 
         get = self._req(self.url, ssn.copy())
         self.w.dispatch(get)
-        assert 'foo' in self.w.get_data(get)
+        assert 'foo' in self.w.get_data()
 
     def test_reset(self):
         self.w.reset_on_start = True
         ssn = {}
         get = self._req(self.url, ssn)
         self.w.dispatch(get)
-        self.w.set_data(get, {'foo':'bar'})
-        assert self.w.get_data(get) == {'foo': 'bar'}
+        self.w.set_data({'foo':'bar'})
+        assert self.w.get_data() == {'foo': 'bar'}
 
         get = self._req(self.url, ssn.copy())
         self.w.dispatch(get)
-        assert 'foo' not in self.w.get_data(get)
+        assert 'foo' not in self.w.get_data()
 
     def test_ajax(self):
         assert 'html' not in self.client.get(self.url,

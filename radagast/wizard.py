@@ -51,23 +51,24 @@ class Wizard(View):
             self.storage.reset()
 
         step = self.get_step(step)
-        self.set_progress(request, step)
-        return self.steps[step](request, self, *args, **kw)
+        self.set_progress(step)
+        kw['wizard'] = self
+        return self.steps[step](request, *args, **kw)
 
-    def set_data(self, request, data):
+    def set_data(self, data):
         self.storage.get()['data'].update(data)
         self.storage.set()
 
-    def get_data(self, request):
+    def get_data(self):
         return self.storage.get()['data']
 
-    def set_progress(self, request, step):
+    def set_progress(self, step):
         progress = self.storage.get()['progress']
         if step not in progress:
             progress.append(step)
             self.storage.set()
 
-    def get_progress(self, request):
+    def get_progress(self):
         return self.storage.get()['progress']
 
     def get_step(self, step):
