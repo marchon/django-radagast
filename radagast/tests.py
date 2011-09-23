@@ -29,6 +29,9 @@ class TestURLs(TestCase):
     def test_not_ajax(self):
         assert 'html' in self.client.get(self.url).content
 
+    def get_ajax(self, url):
+        return self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
     def _req(self, url, ssn):
         rf = RequestFactory()
         req = rf.get(self.url)
@@ -81,5 +84,4 @@ class TestURLs(TestCase):
         assert 'foo' not in self.w.get_data()
 
     def test_ajax(self):
-        assert 'html' not in self.client.get(self.url,
-                            HTTP_X_REQUESTED_WITH='XMLHttpRequest').content
+        assert 'html' not in self.get_ajax(self.url).content

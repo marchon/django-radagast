@@ -9,10 +9,7 @@ class Storage(object):
     def __init__(self, request, name):
         self.name = name
         self.session = request.session
-        self._new = {
-            'progress': [],
-            'data': {}
-        }
+        self._data = {'progress': [], 'data': {}}
         self.data = self.get()
 
     def reset(self):
@@ -56,6 +53,7 @@ class Wizard(View):
         return self.steps[step](request, *args, **kw)
 
     def set_data(self, data):
+        """Place to store arbitrary data in the session for this wizard."""
         self.storage.get()['data'].update(data)
         self.storage.set()
 
@@ -63,6 +61,7 @@ class Wizard(View):
         return self.storage.get()['data']
 
     def set_progress(self, step):
+        """Stores the progress of the user through the wizard."""
         progress = self.storage.get()['progress']
         if step not in progress:
             progress.append(step)
