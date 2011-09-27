@@ -9,7 +9,10 @@ class Storage(object):
     def __init__(self, request, name):
         self.name = name
         self.session = request.session
-        self._data = {'progress': [], 'data': {}}
+        self._new = {
+            'progress': [],
+            'data': {}
+        }
         self.data = self.get()
 
     def reset(self):
@@ -47,10 +50,10 @@ class Wizard(View):
         if not step and self.reset_on_start:
             self.storage.reset()
 
-        step = self.get_step(step)
-        self.set_progress(step)
+        self.step = self.get_step(step)
+        self.set_progress(self.step)
         kw['wizard'] = self
-        return self.steps[step](request, *args, **kw)
+        return self.steps[self.step](request, *args, **kw)
 
     def set_data(self, data):
         """Place to store arbitrary data in the session for this wizard."""
@@ -83,6 +86,7 @@ class Wizard(View):
         Will render the template if using Ajax. If not will wrap the
         template in self.wrapper and use that.
         """
+        context['wizard'] = self
         if request.is_ajax():
             return jingo.render(request, template, context)
         context['content'] = template
